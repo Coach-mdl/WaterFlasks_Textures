@@ -152,6 +152,13 @@ public class FlaskItem extends DiscreteFluidContainerItem {
     }
 
     @Override
+    public ItemStack getCraftingRemainingItem(ItemStack stack) {
+        ItemStack items = new ItemStack(this);
+        items.setDamageValue(stack.getDamageValue());
+        return items;
+    }
+
+    @Override
     @Nonnull
     public ItemStack finishUsingItem(@Nonnull ItemStack stack, Level level, LivingEntity entity)
     {
