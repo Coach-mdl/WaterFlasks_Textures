@@ -55,6 +55,8 @@ def generate(rm: ResourceManager):
 
     heat_recipe(rm, 'wrought_iron_unfinished_iron_flask', 'waterflasks:unfinished_iron_flask', 1535, None, '200 tfc:metal/cast_iron')
 
+    item_heat(rm, 'unfinished_iron_flask', 'waterflasks:unfinished_iron_flask',2.857, mb=200) #iron
+
     damage_shaped(rm, 'crafting/iron_flask', [' SK', 'CBC', 'LIL'], {'I': 'waterflasks:unfinished_iron_flask',
                                                                      'K': '#tfc:knives',
                                                                      'C': 'tfc:burlap_cloth',
@@ -119,6 +121,27 @@ def heat_recipe(rm: ResourceManager, name_parts: utils.ResourceIdentifier, ingre
         'result_fluid': result_fluid,
         'temperature': temperature
     })
+
+def item_heat(rm: ResourceManager, name_parts: utils.ResourceIdentifier, ingredient: utils.Json, heat_capacity: float, melt_temperature: Optional[float] = None, mb: Optional[int] = None, destroy_at: Optional[int] = None):
+    if melt_temperature is not None:
+        forging_temperature = round(melt_temperature * 0.6)
+        welding_temperature = round(melt_temperature * 0.8)
+    else:
+        forging_temperature = welding_temperature = None
+    if mb is not None:
+        # Interpret heat capacity as a specific heat capacity - so we need to scale by the mB present. Baseline is 100 mB (an ingot)
+        # Higher mB = higher heat capacity = heats and cools slower = consumes proportionally more fuel
+        heat_capacity = round(10 * heat_capacity * mb) / 1000
+    rm.data(('tfc', 'item_heats', name_parts), {
+        'ingredient': utils.ingredient(ingredient),
+        'heat_capacity': heat_capacity,
+        'forging_temperature': forging_temperature,
+        'welding_temperature': welding_temperature
+    })
+    if destroy_at is not None:
+        heat_recipe(rm, 'destroy_' + name_parts, ingredient, destroy_at)
+
+
 
 
 def anvil_recipe(rm: ResourceManager, name_parts: utils.ResourceIdentifier, ingredient: Json, result: Json, tier: int, *rules: Rules, bonus: bool = None):
