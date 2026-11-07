@@ -1,6 +1,6 @@
 {
-	"parent": "item/generated",
-	"textures": {
-		"layer0": "waterflasks:item/red_steel_flask-1"
-	}
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "waterflasks:item/red_steel_flask-1"
+  }
 }
